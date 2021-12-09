@@ -1,0 +1,27 @@
+{
+  "name": "devweb",
+  "version": "1.0.0",
+  "description": "Projeto de auxílio a identificações de melhorias na cidade de modo colobarativo.\r Qualquer pessoa pode acessar ao sistema e registrar um problema (saneamento básico,\r rodovias com buracos, pertubação do sossego, falta de medicamentos em postos, etc).",
+  "main": "index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "nodemon src/index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lucasaires/devWeb.git"
+  },
+  "author": "Lucas Aires",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/lucasaires/devWeb/issues"
+  },
+  "homepage": "https://github.com/lucasaires/devWeb#readme",
+  "dependencies": {
+    "express": "^4.17.1"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.15"
+  }
+}
