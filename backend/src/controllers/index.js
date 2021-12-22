@@ -1,7 +1,7 @@
 const problemas = [];
 
 module.exports = {
-  async updated(req, res) {
+  async updatedProblems(req, res) {
     try {
       const prob = {
         nome: `problema ${problemas.length + 1} cadastrado`,
@@ -14,7 +14,7 @@ module.exports = {
     }
   },
 
-  async index(req, res) {
+  async getAllProblems(req, res) {
     return res.json(problemas);
   },
 };

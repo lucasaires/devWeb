@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Modal from "react-modal";
 import { useForm, Controller } from "react-hook-form";
 import { Container } from "./style";
@@ -14,11 +14,17 @@ export function EditProblem({ isOpen, onRequestClose, card }) {
       coments,
     },
   });
+
   const onSubmit = (data) => console.log(data);
 
   return (
     <>
-      <Modal isOpen={isOpen} onRequestClose={() => onRequestClose(!isOpen)}>
+      <Modal
+        className="react-modal-content"
+        overlayClassName="react-modal-overlay"
+        isOpen={isOpen}
+        onRequestClose={() => onRequestClose(!isOpen)}
+      >
         <Row>
           <Container>
             <h1>{title || "Título"}</h1>
@@ -42,7 +48,14 @@ export function EditProblem({ isOpen, onRequestClose, card }) {
                 <Controller
                   name="description"
                   control={control}
-                  render={({ field }) => <input className="w-100" {...field} />}
+                  render={({ field }) => (
+                    <input
+                      value={description}
+                      disabled
+                      className="w-100"
+                      {...field}
+                    />
+                  )}
                   defaultValue={description}
                 />
               </Col>
@@ -53,19 +66,26 @@ export function EditProblem({ isOpen, onRequestClose, card }) {
                   name="likes"
                   control={control}
                   render={({ field }) => (
-                    <input className="w-100" type="number" {...field} />
+                    <input
+                      value={likes}
+                      className="w-100"
+                      type="number"
+                      {...field}
+                    />
                   )}
-                  defaultValue={likes}
+                  // defaultValue={likes}
                 />
               </Col>
 
               <Col>
-                <label htmlFor="">Comentário:</label>
+                <label htmlFor="">Comentários:</label>
 
                 <Controller
                   name="coments"
                   control={control}
-                  render={({ field }) => <input className="w-100" {...field} />}
+                  render={({ field }) => (
+                    <input value={coments} className="w-100" {...field} />
+                  )}
                   defaultValue={coments}
                 />
                 <input type="submit" />

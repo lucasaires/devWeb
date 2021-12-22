@@ -7,4 +7,8 @@ export const Container = styled.div`
   justify-content: center;
   align-items: center;
 `;
-export const Content = styled.main``;
+export const Content = styled.main`
+  .button-like {
+    margin-left: 25px;
+  }
+`;
