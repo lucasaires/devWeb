@@ -1,10 +1,21 @@
-const itens = require("./controllers");
+import { Router } from "express";
 
-const express = require("express");
+import {
+  getAllProblems,
+  getProblemById,
+  createdProblem,
+  newComent,
+  editLike,
+} from "./controllers/index.js";
 
-const routes = express.Router();
+const routes = Router();
 
-routes.post("/", itens.updated);
-routes.get("/", itens.index);
+routes.get("/problems", getAllProblems);
 
-module.exports = routes;
+routes.get("/problem/:id", getProblemById);
+
+routes.post("/newProblem", createdProblem);
+routes.post("/newComent/:id", newComent);
+routes.put("/editLike/:id", editLike);
+
+export default routes;

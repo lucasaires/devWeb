@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "Projeto de auxílio a identificações de melhorias na cidade de modo colobarativo.\r Qualquer pessoa pode acessar ao sistema e registrar um problema (saneamento básico,\r rodovias com buracos, pertubação do sossego, falta de medicamentos em postos, etc).",
   "main": "index.js",
+  "type": "module",
   "scripts": {
     "start": "node src/index.js",
     "dev": "nodemon src/index.js",
@@ -19,7 +20,11 @@
   },
   "homepage": "https://github.com/lucasaires/devWeb#readme",
   "dependencies": {
-    "express": "^4.17.1"
+    "axios": "^0.24.0",
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "mongodb": "^4.2.2",
+    "mongoose": "^6.1.4"
   },
   "devDependencies": {
     "nodemon": "^2.0.15"

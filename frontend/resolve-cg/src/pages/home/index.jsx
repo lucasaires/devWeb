@@ -1,126 +1,76 @@
-import { useEffect, useState } from "react";
-import { Button, Card, Col, Container, Row } from "react-bootstrap";
+import React, { useEffect, useState } from "react";
 import { Header } from "../../components/Header";
 import { EditProblem } from "../modal";
-import { HiEmojiHappy, HiEmojiSad, HiExclamation } from "react-icons/hi";
-import { Content } from "./styles";
+import RecipeReviewCard from "../../components/Card";
 import api from "../../services/api";
+import { Container, Grid, Box, TextField } from "@mui/material";
 
-const mockApiCard = [
-  {
-    title: "Card Title",
-    description: " lorem lorem lorem",
-    isResolved: 1,
-    likes: 5,
-    coments: [],
-  },
-  {
-    title: "Card Title",
-    description: " lorem lorem lorem",
-    isResolved: 2,
-    likes: 2,
-    coments: [],
-  },
-  {
-    title: "Card Title",
-    description: " lorem lorem lorem",
-    isResolved: 3,
-    likes: 0,
-    coments: [],
-  },
+export default function Home() {
+  const [reclamations, setReclamations] = useState([]);
 
-  {
-    title: "Card Title",
-    description: " lorem lorem lorem",
-    isResolved: 2,
-    likes: 2,
-    coments: [],
-  },
-];
-
-export function Home() {
-  const [show, setShow] = useState(false);
-  const [card, setCard] = useState({});
-  const [reclamations, setReclamations] = useState();
-  const [cardSituation, setCardSituation] = useState();
+  const [open, setOpen] = useState(false);
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
 
   useEffect(() => {
-    const handleReclamations = () => {
-      const data = api.get("/reclamations");
-      setReclamations(data);
-    };
+    async function handleReclamations() {
+      if (!reclamations) {
+        const response = await api.get(`/problems/?historic=false`);
+
+        const data = response.data;
+        setReclamations(data);
+      }
+    }
 
     handleReclamations();
   }, [reclamations]);
 
-  const handleClick = (c) => {
-    setCard(c);
-    setShow(true);
-  };
+  useEffect(() => {
+    async function handleReclamations() {
+      const response = await api.get(`/problems/?historic=false`);
 
-  const handleLikes = (c) => {
-    setCard(c);
-    setShow(true);
-  };
+      const data = response.data;
+
+      setReclamations(data);
+    }
+
+    handleReclamations();
+  }, [open]);
 
   return (
     <>
-      {card !== {} && (
-        <EditProblem isOpen={show} onRequestClose={setShow} card={card} />
-      )}
-      <Header />
-      <Container className="mt-5">
-        <Content>
-          <Row>
-            {mockApiCard.map((card, index) => (
-              <Col key={index} lg={4}>
-                <Card
-                  bg={
-                    card.isResolved === 1
-                      ? "danger"
-                      : card.isResolved === 2
-                      ? "warning"
-                      : "success"
+      {
+        <EditProblem
+          open={open}
+          handleClose={handleClose}
+          handleOpen={handleOpen}
+        />
+      }
+      <Header handleOpen={handleOpen} />
+      <Container>
+        <Box marginTop={5} sx={{ flexGrow: 1 }}>
+          <Grid
+            container
+            spacing={{ xs: 2, md: 3 }}
+            columns={{ xs: 4, sm: 8, md: 12 }}
+          >
+            {reclamations !== undefined &&
+              reclamations.map((problem) => (
+                <Grid item xs={12} sm={3} md={4} key={problem._id}>
+                  {
+                    <RecipeReviewCard
+                      id={problem._id}
+                      title={problem.title}
+                      description={problem.description}
+                      likes={problem.likes}
+                      isResolved={problem.isResolved}
+                      coments={problem.coments}
+                    />
                   }
-                  text={"white"}
-                  style={{ width: "18rem" }}
-                  className="mb-2 mt-5"
-                >
-                  <Card.Header>{card.title}</Card.Header>
-                  <Card.Body>
-                    <Card.Title>
-                      {" "}
-                      {card.title}{" "}
-                      {card.isResolved === 1 ? (
-                        <HiEmojiSad />
-                      ) : card.isResolved === 2 ? (
-                        <HiExclamation />
-                      ) : (
-                        <HiEmojiHappy />
-                      )}{" "}
-                    </Card.Title>
-                    <Card.Text>{card.description}</Card.Text>
-
-                    <Button
-                      onClick={() => handleClick(card)}
-                      variant="outline-light"
-                    >
-                      Saber mais
-                    </Button>
-
-                    <Button
-                      onClick={() => handleLikes(card)}
-                      variant="outline-light"
-                      className="button-like"
-                    >
-                      Likes
-                    </Button>
-                  </Card.Body>
-                </Card>
-              </Col>
-            ))}
-          </Row>
-        </Content>
+                </Grid>
+              ))}
+          </Grid>
+        </Box>
       </Container>
     </>
   );

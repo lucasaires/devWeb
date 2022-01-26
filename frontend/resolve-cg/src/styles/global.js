@@ -19,8 +19,7 @@ const GlobalStyle = createGlobalStyle`
   }
 
   body {
-      background: var(--gray-500);
-      color: var(--white);
+      background: var(--gray-100);
   }
 
   button{

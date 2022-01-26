@@ -1,13 +1,8 @@
-import { Home } from "./pages/home";
+import React from "react";
 import Modal from "react-modal";
+import Routes from "./routes";
 
 Modal.setAppElement("#root");
-function App() {
-  return (
-    <div className="App">
-      <Home />
-    </div>
-  );
+export default function App() {
+  return <Routes />;
 }
-
-export default App;

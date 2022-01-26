@@ -1,14 +1,20 @@
-const express = require("express");
-const routes = require("./routes");
+import express, { json, urlencoded } from "express";
+import pkg from "mongoose";
+import routes from "./routes.js";
+import cors from "cors";
 
 const app = express();
-
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-const problemas = [];
+app.use(cors());
+app.use(json());
+app.use(urlencoded({ extended: true }));
 
 app.use(routes);
+const { connect } = pkg;
+connect("mongodb+srv://admin:admin@cluster0.ezhcw.mongodb.net/test", {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+});
 
-app.listen(process.env.PORT || 3000, () =>
-  console.log("Example app listening on port 3000!")
+app.listen(process.env.PORT || 3333, () =>
+  console.log("Example app listening on port 3333!")
 );

@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { Container } from "react-bootstrap";
+import { Container } from "@mui/material";
 
 export const ContainerB = styled(Container)`
   height: 5rem;
@@ -25,9 +25,10 @@ export const Content = styled.header`
         padding: 0 0.5rem;
         height: 5rem;
         line-height: 5rem;
-        color: gray
+        color: gray;
+        width: -webkit-fill-available;
 
-        transition: color 0.2s
+        transition: color 0.2s    
 
         & + a {
             margin-left: 2rem;
@@ -42,6 +43,11 @@ export const Content = styled.header`
             border-bottom: 2px solid yellow
             font-weight: bold
         }
+    }
+
+    button{
+      display: contents;
+      color: white;
     }
   }
 
