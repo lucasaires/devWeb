@@ -4,9 +4,9 @@ import React, { useEffect, useState } from "react";
 import RecipeReviewCard from "../../components/Card";
 import api from "../../services/api";
 
-import { Header } from "../../components/Header";
+import { EditProblem } from "../modal";
 
-const Historic = () => {
+const Historic = ({ open, handleClose }) => {
   const [dataHistory, setDataHistory] = useState();
 
   useEffect(() => {
@@ -23,8 +23,7 @@ const Historic = () => {
 
   return (
     <div>
-      <Header back />
-
+      {<EditProblem open={open} handleClose={handleClose} />}
       <Container>
         <Box marginTop={5} sx={{ flexGrow: 1 }}>
           <Grid

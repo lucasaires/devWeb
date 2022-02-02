@@ -1,8 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { styled } from "@mui/material/styles";
 import Card from "@mui/material/Card";
 import CardHeader from "@mui/material/CardHeader";
-import CardMedia from "@mui/material/CardMedia";
 import CardContent from "@mui/material/CardContent";
 import CardActions from "@mui/material/CardActions";
 import Collapse from "@mui/material/Collapse";
@@ -13,8 +12,8 @@ import { red } from "@mui/material/colors";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import ShareIcon from "@mui/icons-material/Share";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import MoreVertIcon from "@mui/icons-material/MoreVert";
-import { Box, Button, Input, TextField } from "@mui/material";
+import DeleteIcon from "@mui/icons-material/Delete";
+import { Box, Button, TextField } from "@mui/material";
 import api from "../../services/api";
 
 const ExpandMore = styled((props) => {
@@ -48,18 +47,22 @@ export default function RecipeReviewCard({
   };
 
   const setLikes = async () => {
-    const response = await api.put(`editLike/${id}`);
-    const newlikes = response.data.likes;
-    setNewLikes(newlikes);
+    await api.put(`editLike/${id}`);
+    // const newlikes = response.data.likes;
+    setNewLikes(newLikes + 1);
   };
 
   const handleSubmitComents = async () => {
     const response = await api.post(`/newComent/${id}`, { coments: newComent });
-    console.log(response);
 
     const data = response.data;
     setNewComentArray(data.coments);
     setNewComentsState(false);
+  };
+
+  const deleteCard = async () => {
+    const response = await api.delete(`/deleteProblem/${id}`);
+    console.log(response);
   };
   return (
     <Card sx={{ maxWidth: 315 }}>
@@ -70,19 +73,14 @@ export default function RecipeReviewCard({
           </Avatar>
         }
         action={
-          <IconButton aria-label="settings">
-            <MoreVertIcon />
+          <IconButton aria-label="delete" onClick={deleteCard}>
+            <DeleteIcon />
           </IconButton>
         }
         title={title}
         subheader="September 14, 2016"
       />
-      {/* <CardMedia
-        component="img"
-        height="194"
-        image="/static/images/cards/paella.jpg"
-        alt="Paella dish"
-      /> */}
+
       <CardContent>
         <Typography variant="body2" color="text.secondary">
           {description}

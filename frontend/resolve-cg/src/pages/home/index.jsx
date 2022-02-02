@@ -1,29 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { Header } from "../../components/Header";
 import { EditProblem } from "../modal";
 import RecipeReviewCard from "../../components/Card";
 import api from "../../services/api";
-import { Container, Grid, Box, TextField } from "@mui/material";
+import { Container, Grid, Box } from "@mui/material";
+import { useCardList } from "../../hooks/cardsList/useCardList";
 
-export default function Home() {
-  const [reclamations, setReclamations] = useState([]);
-
-  const [open, setOpen] = useState(false);
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
-
-  useEffect(() => {
-    async function handleReclamations() {
-      if (!reclamations) {
-        const response = await api.get(`/problems/?historic=false`);
-
-        const data = response.data;
-        setReclamations(data);
-      }
-    }
-
-    handleReclamations();
-  }, [reclamations]);
+export default function Home({ open, handleClose }) {
+  const { list, changeList, valuelist } = useCardList();
 
   useEffect(() => {
     async function handleReclamations() {
@@ -31,22 +14,20 @@ export default function Home() {
 
       const data = response.data;
 
-      setReclamations(data);
+      changeList(data);
     }
 
     handleReclamations();
-  }, [open]);
+  }, [open, changeList]);
+
+  const filterCard = list?.filter((l) =>
+    l.title.toLowerCase().includes(valuelist.toLowerCase())
+  );
 
   return (
     <>
-      {
-        <EditProblem
-          open={open}
-          handleClose={handleClose}
-          handleOpen={handleOpen}
-        />
-      }
-      <Header handleOpen={handleOpen} />
+      {<EditProblem open={open} handleClose={handleClose} />}
+
       <Container>
         <Box marginTop={5} sx={{ flexGrow: 1 }}>
           <Grid
@@ -54,8 +35,8 @@ export default function Home() {
             spacing={{ xs: 2, md: 3 }}
             columns={{ xs: 4, sm: 8, md: 12 }}
           >
-            {reclamations !== undefined &&
-              reclamations.map((problem) => (
+            {filterCard !== undefined &&
+              filterCard.map((problem) => (
                 <Grid item xs={12} sm={3} md={4} key={problem._id}>
                   {
                     <RecipeReviewCard

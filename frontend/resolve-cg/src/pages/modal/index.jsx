@@ -1,13 +1,5 @@
-import {
-  Box,
-  Button,
-  Grid,
-  Input,
-  Modal,
-  TextField,
-  Typography,
-} from "@mui/material";
-import React, { useEffect } from "react";
+import { Box, Grid, Modal, TextField, Typography } from "@mui/material";
+import React from "react";
 import { useForm, Controller } from "react-hook-form";
 import api from "../../services/api";
 
@@ -23,14 +15,13 @@ const style = {
   p: 4,
 };
 
-export function EditProblem({ open, handleOpen, handleClose }) {
-  const { control, handleSubmit, register, reset } = useForm({
+export function EditProblem({ open, handleClose }) {
+  const { control, handleSubmit, reset } = useForm({
     defaultValues: {},
   });
 
   const onSubmit = async (data) => {
     await api.post("newProblem", { ...data, isResolved: false });
-    // window.location.reload(false);
     reset();
     handleClose();
   };
@@ -50,7 +41,7 @@ export function EditProblem({ open, handleOpen, handleClose }) {
 
         <form onSubmit={handleSubmit(onSubmit)}>
           <Grid container spacing={2}>
-            <Grid xs={12}>
+            <Grid item xs={12}>
               <Typography marginBottom={1} marginTop={5}>
                 {" "}
                 <strong>DESCRIÇÃO: </strong>{" "}
@@ -76,7 +67,7 @@ export function EditProblem({ open, handleOpen, handleClose }) {
               />
             </Grid>
 
-            <Grid xs={12}>
+            <Grid item xs={12}>
               <Typography marginTop={2} marginBottom={1}>
                 {" "}
                 <strong> LOCALIZAÇÃO: </strong>

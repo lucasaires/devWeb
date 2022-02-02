@@ -92,3 +92,14 @@ export async function getProblemById(req, res) {
     return res.status(400).send({ error: "Erro na listagem do problema" });
   }
 }
+
+export async function deleteProblemById(req, res) {
+  try {
+    const id = req.params.id;
+
+    const res = await Problems.deleteOne({ _id: id });
+    return res.status(200).send({ ok: "Problema deletado" });
+  } catch (err) {
+    return res.status(400).send({ error: "Erro na listagem do problema" });
+  }
+}
