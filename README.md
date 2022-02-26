@@ -7,16 +7,13 @@ rodovias com buracos, pertubação do sossego, falta de medicamentos em postos, 
 Os problemas ficam expostos no mural, com a disponibilidade de mais pessoas curtirem o post
 fazendo com que eles ganhem mais relevância, será possível ordenar/filtrar por relevância.
 
-Ao clicar para visualização do card, informações adicionais serão mostradas em tela, 
-sendo possível tercer comentários a cerca do card.
+O usuário poderá adicionar cometários aos posts. 
 
-Bem como uma solicitação de revisão do problema.
+No menu é possível selecionar o histórico de casos solucionados.
 
-O Card tem três momentos definido por uma barra de cor ->
+No menu ao selecionar novo problema, é aberto um modal com um formulário para cadastro. 
 
-1. Vermelho
-2. Amarelo
-3. Verde
+Ao cadastrar um problema é gerado um hash único que servirá para a remoção do problema, ou marca-lo como resolvido. 
 
-Que são ilustrações para a situação do problema, além da ilustração de cores, apresentará também 
-uma apresentação com ícones para facilitar a identificação da situação do card.
+Qualquer um poderá solicitar a revisão do problema como resolvido, mas apenas o administrador e o usuário quem criou podem 
+mudar o status. 
