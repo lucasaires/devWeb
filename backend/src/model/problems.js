@@ -5,12 +5,36 @@ const { Schema, model } = pkg;
 const ProblemsSchema = new Schema({
   title: {
     type: String,
-    require: true,
+    required: true,
+  },
+
+  hash: {
+    type: String,
+    required: true,
+  },
+
+  cep: {
+    type: String,
+    required: true,
+  },
+
+  adress: {
+    type: String,
+    required: true,
+  },
+
+  street: {
+    type: String,
+    required: true,
+  },
+
+  complement: {
+    type: String,
   },
 
   description: {
     type: String,
-    require: true,
+    required: true,
     lowercase: true,
   },
 
@@ -27,7 +51,7 @@ const ProblemsSchema = new Schema({
 
   coments: {
     type: [String],
-    require: true,
+    default: [],
   },
 
   createdAt: {

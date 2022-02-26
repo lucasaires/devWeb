@@ -1,10 +1,17 @@
 import Problems from "../model/problems.js";
+import { sha1 } from "object-hash";
 
 export async function createdProblem(req, res) {
   try {
-    const problem = await Problems.create(req.body);
+    const problem = await Problems.create({ ...req.body, hash: "" });
 
-    return res.json(problem);
+    const hash = sha1(problem.id).substring(0, 4);
+
+    const updatedProblem = await Problems.findOneAndUpdate(problem.id, {
+      hash: hash,
+    });
+
+    return res.json(updatedProblem);
   } catch (err) {
     return res.status(400).send({ error: "Erro Na criação do problema" });
   }
@@ -85,9 +92,9 @@ export async function getAllProblems(req, res) {
 export async function getProblemById(req, res) {
   try {
     const id = req.params.id;
-    const problems = await Problems.findById(id);
+    const problem = await Problems.findById(id);
 
-    return res.json(problems);
+    return res.json(problem);
   } catch (err) {
     return res.status(400).send({ error: "Erro na listagem do problema" });
   }
@@ -96,10 +103,17 @@ export async function getProblemById(req, res) {
 export async function deleteProblemById(req, res) {
   try {
     const id = req.params.id;
+    const { hash } = req.body;
+
+    sha1(problem.id).substring(0, 4);
+
+    if (hash !== sha1(problem.id).substring(0, 4)) {
+      throw new UserExeption("Invalid Hash");
+    }
 
     const res = await Problems.deleteOne({ _id: id });
     return res.status(200).send({ ok: "Problema deletado" });
   } catch (err) {
-    return res.status(400).send({ error: "Erro na listagem do problema" });
+    return res.status(400).send({ error: "Erro na remoção do problema" });
   }
 }
