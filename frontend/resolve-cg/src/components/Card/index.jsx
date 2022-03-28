@@ -16,6 +16,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import { Box, Button, TextField } from "@mui/material";
 import api from "../../services/api";
 import { useCardList } from "../../hooks/cardsList/useCardList";
+import { Link } from "react-router-dom";
 
 const ExpandMore = styled((props) => {
   const { expand, ...other } = props;
@@ -81,21 +82,22 @@ export default function RecipeReviewCard({
   };
   return (
     <Card sx={{ maxWidth: 315 }}>
-      <CardHeader
-        avatar={
-          <Avatar sx={{ bgcolor: red[500] }} aria-label="recipe">
-            R
-          </Avatar>
-        }
-        action={
-          <IconButton aria-label="delete" onClick={deleteCard}>
-            <DeleteIcon />
-          </IconButton>
-        }
-        title={title}
-        subheader={`${adress}`}
-      />
-
+      <Link to={`/preview/${id}`}>
+        <CardHeader
+          avatar={
+            <Avatar sx={{ bgcolor: red[500] }} aria-label="recipe">
+              R
+            </Avatar>
+          }
+          action={
+            <IconButton aria-label="delete" onClick={deleteCard}>
+              <DeleteIcon />
+            </IconButton>
+          }
+          title={title}
+          subheader={`${adress}`}
+        />
+      </Link>
       <CardContent>
         <Typography variant="body2" color="text.secondary">
           <strong>Rua:</strong> {street}

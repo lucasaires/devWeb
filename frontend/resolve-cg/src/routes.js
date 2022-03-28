@@ -4,6 +4,7 @@ import Header from "./components/Header";
 
 import Historic from "./pages/historic";
 import Home from "./pages/home";
+import { Preview } from "./pages/preview";
 
 export default function Routes() {
   const [open, setOpen] = useState(false);
@@ -22,6 +23,11 @@ export default function Routes() {
         <Route
           path="/historic"
           element={<Historic open={open} handleClose={handleClose} />}
+        />
+
+        <Route
+          path="/preview/:id"
+          element={<Preview open={open} handleClose={handleClose} />}
         />
       </DomRoutes>
     </BrowserRouter>
