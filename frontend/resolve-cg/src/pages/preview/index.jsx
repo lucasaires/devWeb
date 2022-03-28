@@ -38,7 +38,7 @@ export function Preview() {
         <Typography variant="h4">
           Comentários:
           {problem?.coments.map((coment) => (
-            <li style={{ listStyle: "none" }}>{coment}</li>
+            <li style={{ listStyle: "none", marginLeft: 30 }}>{coment}</li>
           ))}
         </Typography>
       </Box>
