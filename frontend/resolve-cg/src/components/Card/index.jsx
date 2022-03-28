@@ -10,11 +10,12 @@ import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
 import { red } from "@mui/material/colors";
 import FavoriteIcon from "@mui/icons-material/Favorite";
-import ShareIcon from "@mui/icons-material/Share";
+import Check from "@mui/icons-material/Check";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { Box, Button, TextField } from "@mui/material";
 import api from "../../services/api";
+import { useCardList } from "../../hooks/cardsList/useCardList";
 
 const ExpandMore = styled((props) => {
   const { expand, ...other } = props;
@@ -32,6 +33,8 @@ export default function RecipeReviewCard({
   title,
   description,
   likes,
+  adress,
+  street,
   isResolved,
   coments,
 }) {
@@ -42,6 +45,8 @@ export default function RecipeReviewCard({
   const [newComent, setNewComent] = useState();
   const [newComentArray, setNewComentArray] = useState(coments);
 
+  const { handleList } = useCardList();
+
   const handleExpandClick = () => {
     setExpanded(!expanded);
   };
@@ -49,6 +54,7 @@ export default function RecipeReviewCard({
   const setLikes = async () => {
     await api.put(`editLike/${id}`);
     // const newlikes = response.data.likes;
+    handleList();
     setNewLikes(newLikes + 1);
   };
 
@@ -61,8 +67,17 @@ export default function RecipeReviewCard({
   };
 
   const deleteCard = async () => {
-    const response = await api.delete(`/deleteProblem/${id}`);
-    console.log(response);
+    let hash = prompt("Digite o código de confirmação:");
+
+    await api.delete(`/deleteProblem/${id}/${hash}`);
+    handleList();
+  };
+
+  const handleChangeResolve = async () => {
+    let hash = prompt("Digite o código de confirmação:");
+
+    await api.put(`/changeResolved/${id}/${hash}`);
+    handleList();
   };
   return (
     <Card sx={{ maxWidth: 315 }}>
@@ -78,21 +93,25 @@ export default function RecipeReviewCard({
           </IconButton>
         }
         title={title}
-        subheader="September 14, 2016"
+        subheader={`${adress}`}
       />
 
       <CardContent>
         <Typography variant="body2" color="text.secondary">
-          {description}
+          <strong>Rua:</strong> {street}
+        </Typography>
+
+        <Typography variant="body2" color="text.secondary">
+          <strong> Descrição: </strong> {description}
         </Typography>
       </CardContent>
       <CardActions disableSpacing>
         <IconButton aria-label="add to favorites" onClick={setLikes}>
           {newLikes}
-          <FavoriteIcon />
+          <FavoriteIcon style={{ color: "red", marginLeft: "2px" }} />
         </IconButton>
-        <IconButton aria-label="share">
-          <ShareIcon />
+        <IconButton aria-label="check" onClick={handleChangeResolve}>
+          <Check style={{ color: "green" }} />
         </IconButton>
         <ExpandMore
           expand={expanded}
@@ -123,10 +142,7 @@ export default function RecipeReviewCard({
                 rows={1}
                 onChange={(e) => setNewComent(e.target.value)}
               />
-              {/* <Input
-                onChange={(e) => setNewComent(e.target.value)}
-                type="text"
-              /> */}
+
               <Button onClick={handleSubmitComents}> enviar</Button>
             </Box>
           )}

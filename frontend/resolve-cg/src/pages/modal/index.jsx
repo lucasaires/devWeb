@@ -1,10 +1,12 @@
 import { Box, Grid, Modal, TextField, Typography } from "@mui/material";
 import React from "react";
 import { useForm, Controller } from "react-hook-form";
+import { useCardList } from "../../hooks/cardsList/useCardList";
 import api from "../../services/api";
 
 const style = {
   position: "absolute",
+  marginTop: "2%",
   top: "50%",
   left: "50%",
   transform: "translate(-50%, -50%)",
@@ -20,10 +22,24 @@ export function EditProblem({ open, handleClose }) {
     defaultValues: {},
   });
 
+  const { handleList } = useCardList();
+
   const onSubmit = async (data) => {
-    await api.post("newProblem", { ...data, isResolved: false });
+    const problem = await api.post("newProblem", {
+      ...data,
+      isResolved: false,
+    });
     reset();
+    handleList();
+
     handleClose();
+
+    const hash = problem.data.hash;
+    handleAlert(hash);
+  };
+
+  const handleAlert = (problem) => {
+    alert(`Anote o Código: ${problem}`);
   };
 
   return (

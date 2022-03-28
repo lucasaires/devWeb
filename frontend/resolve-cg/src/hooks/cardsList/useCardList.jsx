@@ -12,6 +12,7 @@ export function CardListProvider({ children }) {
       const response = await api.get(`/problems/?historic=false`);
 
       const data = response.data;
+
       setList(data);
     }
 
@@ -26,9 +27,17 @@ export function CardListProvider({ children }) {
     setValueList(fill);
   };
 
+  const handleList = async () => {
+    const response = await api.get(`/problems/?historic=false`);
+
+    const data = response.data;
+
+    setList(data);
+  };
+
   return (
     <CardListContext.Provider
-      value={{ list, changeList, valuelist, changeListFilter }}
+      value={{ list, changeList, valuelist, changeListFilter, handleList }}
     >
       {children}
     </CardListContext.Provider>

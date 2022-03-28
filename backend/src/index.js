@@ -15,6 +15,6 @@ connect("mongodb+srv://admin:admin@cluster0.ezhcw.mongodb.net/test", {
   useUnifiedTopology: true,
 });
 
-app.listen(process.env.PORT || 3333, () =>
-  console.log("Example app listening on port 3333!")
+app.listen(process.env.PORT || 3334, () =>
+  console.log("Example app listening on port 3334!")
 );

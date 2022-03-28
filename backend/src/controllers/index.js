@@ -3,7 +3,8 @@ import { sha1 } from "object-hash";
 
 export async function createdProblem(req, res) {
   try {
-    const problem = await Problems.create({ ...req.body, hash: "" });
+    const p = { ...req.body, hash: "0000" };
+    const problem = await Problems.create(p);
 
     const hash = sha1(problem.id).substring(0, 4);
 
@@ -11,7 +12,7 @@ export async function createdProblem(req, res) {
       hash: hash,
     });
 
-    return res.json(updatedProblem);
+    return res.json({ ...updatedProblem, hash: hash });
   } catch (err) {
     return res.status(400).send({ error: "Erro Na criação do problema" });
   }
@@ -50,14 +51,19 @@ export async function newComent(req, res) {
     return res.status(400).send({ error: "Erro Na adiçao dos comentários " });
   }
 }
-export async function getIsResolved(req, res) {
+export async function changeResolved(req, res) {
   try {
-    const problems = await Problems.find();
-    const problemsFilter = problems.filter(
-      (problem) => problem.isResolved === true
-    );
+    const { id, hash } = req.params;
 
-    return res.json(problemsFilter);
+    let problem = await Problems.findById(id);
+
+    if (problem.hash === hash) {
+      problem = await Problems.findByIdAndUpdate(id, {
+        isResolved: true,
+      });
+    }
+
+    return res.json(problem);
   } catch (err) {
     return res.status(400).send({ error: "Erro na procura do problema" });
   }
@@ -102,16 +108,14 @@ export async function getProblemById(req, res) {
 
 export async function deleteProblemById(req, res) {
   try {
-    const id = req.params.id;
-    const { hash } = req.body;
+    const { id, hash } = req.params;
 
-    sha1(problem.id).substring(0, 4);
+    let problem = await Problems.findById(id);
 
-    if (hash !== sha1(problem.id).substring(0, 4)) {
-      throw new UserExeption("Invalid Hash");
+    if (problem.hash === hash) {
+      await Problems.findByIdAndDelete({ _id: id });
     }
 
-    const res = await Problems.deleteOne({ _id: id });
     return res.status(200).send({ ok: "Problema deletado" });
   } catch (err) {
     return res.status(400).send({ error: "Erro na remoção do problema" });

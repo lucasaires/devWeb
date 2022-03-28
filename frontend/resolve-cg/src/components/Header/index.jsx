@@ -1,25 +1,68 @@
 import React from "react";
-import { Menu, MenuItem, TextField } from "@mui/material";
+import { Menu, MenuItem } from "@mui/material";
 import { useCardList } from "../../hooks/cardsList/useCardList";
-
+import InputBase from "@mui/material/InputBase";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
 import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
 import MenuIcon from "@mui/icons-material/Menu";
 import { Link } from "react-router-dom";
+import { styled, alpha } from "@mui/material/styles";
+import AppBar from "@mui/material/AppBar";
+import Container from "@mui/material/Container";
+import Button from "@mui/material/Button";
+import SearchIcon from "@mui/icons-material/Search";
+
+const Search = styled("div")(({ theme }) => ({
+  margin: "20px",
+  position: "relative",
+  borderRadius: theme.shape.borderRadius,
+  backgroundColor: alpha(theme.palette.common.white, 0.15),
+  "&:hover": {
+    backgroundColor: alpha(theme.palette.common.white, 0.25),
+  },
+  marginRight: theme.spacing(2),
+  marginLeft: 0,
+  width: "100%",
+  [theme.breakpoints.up("sm")]: {
+    marginLeft: theme.spacing(3),
+    width: "auto",
+  },
+}));
+
+const SearchIconWrapper = styled("div")(({ theme }) => ({
+  padding: theme.spacing(0, 2),
+  height: "100%",
+  position: "absolute",
+  pointerEvents: "none",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+}));
+
+const StyledInputBase = styled(InputBase)(({ theme }) => ({
+  color: "inherit",
+  "& .MuiInputBase-input": {
+    padding: theme.spacing(1, 1, 1, 0),
+    // vertical padding + font size from searchIcon
+    paddingLeft: `calc(1em + ${theme.spacing(4)})`,
+    transition: theme.transitions.create("width"),
+    width: "100%",
+    [theme.breakpoints.up("md")]: {
+      width: "20ch",
+    },
+  },
+}));
 
 function Header({ handleOpen }) {
-  const { changeListFilter } = useCardList();
+  const { changeListFilter, handleList } = useCardList();
 
-  const [anchorEl, setAnchorEl] = React.useState(null);
-
-  const handleMenu = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
+  const [, setAnchorEl] = React.useState(null);
 
   const handleClose = () => {
     setAnchorEl(null);
+    handleList();
   };
 
   const handleNewProblem = () => {
@@ -27,66 +70,115 @@ function Header({ handleOpen }) {
     handleOpen();
   };
 
+  const pages = [
+    { item: "Home", action: handleClose, path: "/" },
+    { item: "Novo Problema", action: handleNewProblem, path: "" },
+    { item: "Histórico", action: handleClose, path: "/historic" },
+  ];
+
+  const [anchorElNav, setAnchorElNav] = React.useState(null);
+
+  const handleOpenNavMenu = (event) => {
+    setAnchorElNav(event.currentTarget);
+  };
+
+  const handleCloseNavMenu = () => {
+    setAnchorElNav(null);
+    handleList();
+  };
+
   return (
-    <Box sx={{ flexGrow: 1 }}>
-      <Toolbar>
-        <IconButton
-          size="large"
-          edge="start"
-          color="inherit"
-          aria-label="menu"
-          onClick={handleMenu}
-          sx={{ mr: 2 }}
-        >
-          <MenuIcon />
-        </IconButton>
-        <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-          RESOLVE.CG
-        </Typography>
+    <>
+      <AppBar position="static">
+        <Container maxWidth="xl">
+          <Toolbar disableGutters>
+            <Typography
+              variant="h6"
+              noWrap
+              component="div"
+              sx={{ mr: 2, display: { xs: "none", md: "flex" } }}
+            >
+              RESOLVE.CG
+            </Typography>
 
-        <TextField
-          id="outlined-basic"
-          label="Pesquisar"
-          variant="outlined"
-          onChange={(e) => changeListFilter(e.target.value)}
-          sx={{ display: { xs: "none", md: "block" } }}
-        />
+            <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
+              <IconButton
+                size="large"
+                aria-label="account of current user"
+                aria-controls="menu-appbar"
+                aria-haspopup="true"
+                onClick={handleOpenNavMenu}
+                color="inherit"
+              >
+                <MenuIcon />
+              </IconButton>
+              <Menu
+                id="menu-appbar"
+                anchorEl={anchorElNav}
+                anchorOrigin={{
+                  vertical: "bottom",
+                  horizontal: "left",
+                }}
+                keepMounted
+                transformOrigin={{
+                  vertical: "top",
+                  horizontal: "left",
+                }}
+                open={Boolean(anchorElNav)}
+                onClose={handleCloseNavMenu}
+                sx={{
+                  display: { xs: "block", md: "none" },
+                }}
+              >
+                {pages.map((page, index) => (
+                  <Link to={page.path} key={index}>
+                    <MenuItem key={index} onClick={page.action}>
+                      <Typography textAlign="center">{page.item}</Typography>
+                    </MenuItem>
+                  </Link>
+                ))}
+              </Menu>
+            </Box>
+            <Typography
+              variant="h6"
+              noWrap
+              component="div"
+              sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}
+            >
+              RESOLVE.CG
+            </Typography>
+            <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
+              {pages.map((page, index) => (
+                <Link style={{ marginTop: "5px" }} key={index} to={page?.path}>
+                  <Button
+                    key={index}
+                    onClick={page.action}
+                    sx={{
+                      my: 2,
+                      color: "white",
+                      display: "block",
+                    }}
+                  >
+                    {page.item}
+                  </Button>
+                </Link>
+              ))}
 
-        <div>
-          <IconButton
-            size="large"
-            aria-label="account of current user"
-            aria-controls="menu-appbar"
-            aria-haspopup="true"
-            onClick={handleMenu}
-            color="inherit"
-          ></IconButton>
-          <Menu
-            id="menu-appbar"
-            anchorEl={anchorEl}
-            anchorOrigin={{
-              vertical: "top",
-              horizontal: "right",
-            }}
-            keepMounted
-            transformOrigin={{
-              vertical: "top",
-              horizontal: "right",
-            }}
-            open={Boolean(anchorEl)}
-            onClose={handleClose}
-          >
-            <Link to="/">
-              <MenuItem onClick={handleClose}>Home</MenuItem>
-            </Link>
-            <MenuItem onClick={handleNewProblem}>Novo Problema</MenuItem>
-            <Link to="/historic">
-              <MenuItem onClick={handleClose}>Histórico</MenuItem>
-            </Link>
-          </Menu>
-        </div>
-      </Toolbar>
-    </Box>
+              <Search>
+                <SearchIconWrapper>
+                  <SearchIcon />
+                </SearchIconWrapper>
+                <StyledInputBase
+                  onChange={(e) => changeListFilter(e.target.value)}
+                  placeholder="Search…"
+                  inputProps={{ "aria-label": "search" }}
+                />
+              </Search>
+            </Box>
+          </Toolbar>
+        </Container>
+      </AppBar>
+    </>
   );
 }
 

@@ -17,8 +17,10 @@ export default function Home({ open, handleClose }) {
       changeList(data);
     }
 
-    handleReclamations();
-  }, [open, changeList]);
+    if (!list) {
+      handleReclamations();
+    }
+  }, [open, changeList, list]);
 
   const filterCard = list?.filter((l) =>
     l.title.toLowerCase().includes(valuelist.toLowerCase())
@@ -43,6 +45,8 @@ export default function Home({ open, handleClose }) {
                       id={problem._id}
                       title={problem.title}
                       description={problem.description}
+                      adress={problem.adress}
+                      street={problem.street}
                       likes={problem.likes}
                       isResolved={problem.isResolved}
                       coments={problem.coments}
