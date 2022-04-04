@@ -4,7 +4,6 @@ import RecipeReviewCard from "../../components/Card";
 import api from "../../services/api";
 import { Container, Grid, Box } from "@mui/material";
 import { useCardList } from "../../hooks/cardsList/useCardList";
-import { Link } from "react-router-dom";
 
 export default function Home({ open, handleClose }) {
   const { list, changeList, valuelist } = useCardList();

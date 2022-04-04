@@ -22,20 +22,25 @@ export function EditProblem({ open, handleClose }) {
     defaultValues: {},
   });
 
-  const { handleList } = useCardList();
+  const { addCard } = useCardList();
 
   const onSubmit = async (data) => {
-    const problem = await api.post("newProblem", {
+    const problem = await api.post("/newProblem", {
       ...data,
       isResolved: false,
     });
-    reset();
-    handleList();
 
-    handleClose();
+    if (problem.status === 200) {
+      reset();
 
-    const hash = problem.data.hash;
-    handleAlert(hash);
+      handleClose();
+      const hash = problem.data.hash;
+      handleAlert(hash);
+      addCard(problem.data);
+    } else {
+      handleClose();
+      alert("Erro ao cadastrar problema");
+    }
   };
 
   const handleAlert = (problem) => {

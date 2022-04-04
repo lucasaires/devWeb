@@ -38,6 +38,8 @@ const Historic = ({ open, handleClose }) => {
                     <RecipeReviewCard
                       id={history._id}
                       title={history.title}
+                      street={history.street}
+                      adress={history.adress}
                       description={history.description}
                       likes={history.likes}
                       isResolved={history.isResolved}

@@ -14,7 +14,6 @@ import Check from "@mui/icons-material/Check";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { Box, Button, TextField } from "@mui/material";
-import api from "../../services/api";
 import { useCardList } from "../../hooks/cardsList/useCardList";
 import { Link } from "react-router-dom";
 
@@ -42,77 +41,54 @@ export default function RecipeReviewCard({
   const [expanded, setExpanded] = useState(false);
   const [newComentsState, setNewComentsState] = useState(false);
 
-  const [newLikes, setNewLikes] = useState(likes);
   const [newComent, setNewComent] = useState();
-  const [newComentArray, setNewComentArray] = useState(coments);
 
-  const { handleList } = useCardList();
+  const { handleChangeResolve, deleteCard, setLikes, handleSubmitComents } =
+    useCardList();
 
   const handleExpandClick = () => {
     setExpanded(!expanded);
   };
 
-  const setLikes = async () => {
-    await api.put(`editLike/${id}`);
-    // const newlikes = response.data.likes;
-    handleList();
-    setNewLikes(newLikes + 1);
-  };
-
-  const handleSubmitComents = async () => {
-    const response = await api.post(`/newComent/${id}`, { coments: newComent });
-
-    const data = response.data;
-    setNewComentArray(data.coments);
+  const submitComents = async (id) => {
+    handleSubmitComents(id, newComent);
     setNewComentsState(false);
   };
 
-  const deleteCard = async () => {
-    let hash = prompt("Digite o código de confirmação:");
-
-    await api.delete(`/deleteProblem/${id}/${hash}`);
-    handleList();
-  };
-
-  const handleChangeResolve = async () => {
-    let hash = prompt("Digite o código de confirmação:");
-
-    await api.put(`/changeResolved/${id}/${hash}`);
-    handleList();
-  };
   return (
     <Card sx={{ maxWidth: 315 }}>
+      <CardHeader
+        avatar={
+          <Avatar sx={{ bgcolor: red[500] }} aria-label="recipe">
+            R
+          </Avatar>
+        }
+        action={
+          <IconButton aria-label="delete" onClick={() => deleteCard(id)}>
+            <DeleteIcon />
+          </IconButton>
+        }
+        title={title}
+        subheader={`${adress}`}
+      />
       <Link to={`/preview/${id}`}>
-        <CardHeader
-          avatar={
-            <Avatar sx={{ bgcolor: red[500] }} aria-label="recipe">
-              R
-            </Avatar>
-          }
-          action={
-            <IconButton aria-label="delete" onClick={deleteCard}>
-              <DeleteIcon />
-            </IconButton>
-          }
-          title={title}
-          subheader={`${adress}`}
-        />
-      </Link>
-      <CardContent>
-        <Typography variant="body2" color="text.secondary">
-          <strong>Rua:</strong> {street}
-        </Typography>
+        <CardContent>
+          <Typography variant="body2" color="text.secondary">
+            <strong>Rua:</strong> {street}
+          </Typography>
 
-        <Typography variant="body2" color="text.secondary">
-          <strong> Descrição: </strong> {description}
-        </Typography>
-      </CardContent>
+          <Typography variant="body2" color="text.secondary">
+            <strong> Descrição: </strong> {description}
+          </Typography>
+        </CardContent>
+      </Link>
+
       <CardActions disableSpacing>
-        <IconButton aria-label="add to favorites" onClick={setLikes}>
-          {newLikes}
+        <IconButton aria-label="add to favorites" onClick={() => setLikes(id)}>
+          {likes}
           <FavoriteIcon style={{ color: "red", marginLeft: "2px" }} />
         </IconButton>
-        <IconButton aria-label="check" onClick={handleChangeResolve}>
+        <IconButton aria-label="check" onClick={() => handleChangeResolve(id)}>
           <Check style={{ color: "green" }} />
         </IconButton>
         <ExpandMore
@@ -128,7 +104,7 @@ export default function RecipeReviewCard({
         <CardContent>
           <Typography paragraph>Comentários:</Typography>
 
-          {newComentArray.map((coment) => (
+          {coments.map((coment) => (
             <Box marginBottom={2}>
               <Typography variant="span">{coment}</Typography>
             </Box>
@@ -145,7 +121,7 @@ export default function RecipeReviewCard({
                 onChange={(e) => setNewComent(e.target.value)}
               />
 
-              <Button onClick={handleSubmitComents}> enviar</Button>
+              <Button onClick={() => submitComents(id)}> enviar</Button>
             </Box>
           )}
           <Box>

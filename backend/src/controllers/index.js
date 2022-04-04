@@ -3,16 +3,11 @@ import { sha1 } from "object-hash";
 
 export async function createdProblem(req, res) {
   try {
-    const p = { ...req.body, hash: "0000" };
+    const hash = Math.floor(Math.random() * 65536);
+    const p = { ...req.body, hash };
     const problem = await Problems.create(p);
 
-    const hash = sha1(problem.id).substring(0, 4);
-
-    const updatedProblem = await Problems.findOneAndUpdate(problem.id, {
-      hash: hash,
-    });
-
-    return res.json({ ...updatedProblem, hash: hash });
+    return res.status(200).json(problem);
   } catch (err) {
     return res.status(400).send({ error: "Erro Na criação do problema" });
   }
@@ -23,11 +18,15 @@ export async function editLike(req, res) {
 
     const problem = await Problems.findById(id);
 
-    const newProblem = await Problems.findByIdAndUpdate(id, {
-      likes: ++problem.likes,
-    });
+    if (problem) {
+      const newProblem = await Problems.findByIdAndUpdate(id, {
+        likes: ++problem.likes,
+      });
 
-    return res.json(newProblem);
+      return res.status(200).json(newProblem);
+    } else {
+      return res.status(404).send({ error: "Problema não encontrado" });
+    }
   } catch (err) {
     return res.status(400).send({ error: "Erro Na edição dos likes" });
   }
@@ -61,9 +60,10 @@ export async function changeResolved(req, res) {
       problem = await Problems.findByIdAndUpdate(id, {
         isResolved: true,
       });
+      return res.status(200).json(problem);
+    } else {
+      return res.status(404).send({ error: "Hash Incorreto" });
     }
-
-    return res.json(problem);
   } catch (err) {
     return res.status(400).send({ error: "Erro na procura do problema" });
   }
@@ -114,9 +114,10 @@ export async function deleteProblemById(req, res) {
 
     if (problem.hash === hash) {
       await Problems.findByIdAndDelete({ _id: id });
+      return res.status(200).send({ ok: "Problema deletado" });
+    } else {
+      return res.status(404).send({ error: "Hash Incorreto" });
     }
-
-    return res.status(200).send({ ok: "Problema deletado" });
   } catch (err) {
     return res.status(400).send({ error: "Erro na remoção do problema" });
   }

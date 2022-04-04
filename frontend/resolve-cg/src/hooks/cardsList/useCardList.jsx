@@ -19,6 +19,10 @@ export function CardListProvider({ children }) {
     handleReclamations();
   }, []);
 
+  const addCard = async (newCard) => {
+    setList([...list, newCard]);
+  };
+
   const changeList = (newList) => {
     setList(newList);
   };
@@ -27,17 +31,71 @@ export function CardListProvider({ children }) {
     setValueList(fill);
   };
 
-  const handleList = async () => {
-    const response = await api.get(`/problems/?historic=false`);
+  const handleChangeResolve = async (id) => {
+    let hash = prompt("Digite o código de confirmação:");
 
-    const data = response.data;
+    const response = await api.put(`/changeResolved/${id}/${hash}`);
 
-    setList(data);
+    if (response.status === 200) {
+      alert("Problema resolvido com sucesso!");
+
+      setList(list.filter((item) => item._id !== id));
+    }
+  };
+
+  const handleSubmitComents = async (id, newComent) => {
+    let updatedCard = [{ ...list }];
+
+    const response = await api.post(`/newComent/${id}`, { coments: newComent });
+    if (response.status === 200) {
+      updatedCard = list.map((item) => {
+        if (item._id === id) {
+          item.coments.push(newComent);
+        }
+        return item;
+      });
+    }
+    setList(updatedCard);
+  };
+
+  const setLikes = async (id) => {
+    let updatedCard = [{ ...list }];
+    const response = await api.put(`editLike/${id}`);
+
+    if (response.status === 200) {
+      updatedCard = list.map((item) => {
+        if (item._id === id) {
+          return { ...item, likes: item.likes + 1 };
+        }
+        return item;
+      });
+      setList(updatedCard);
+    }
+  };
+
+  const deleteCard = async (id) => {
+    let hash = prompt("Digite o código de confirmação:");
+
+    const response = await api.delete(`/deleteProblem/${id}/${hash}`);
+
+    if (response.status === 200) {
+      setList(list.filter((item) => item._id !== id));
+    }
   };
 
   return (
     <CardListContext.Provider
-      value={{ list, changeList, valuelist, changeListFilter, handleList }}
+      value={{
+        addCard,
+        list,
+        changeList,
+        valuelist,
+        changeListFilter,
+        handleChangeResolve,
+        deleteCard,
+        setLikes,
+        handleSubmitComents,
+      }}
     >
       {children}
     </CardListContext.Provider>
