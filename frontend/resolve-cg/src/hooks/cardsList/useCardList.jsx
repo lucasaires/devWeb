@@ -5,6 +5,8 @@ const CardListContext = createContext();
 
 export function CardListProvider({ children }) {
   const [list, setList] = useState();
+  const [historic, setHistoric] = useState();
+
   const [valuelist, setValueList] = useState("");
 
   useEffect(() => {
@@ -15,8 +17,16 @@ export function CardListProvider({ children }) {
 
       setList(data);
     }
+    const handleHistoric = async () => {
+      const response = await api.get("/problems/?historic=true");
+
+      const data = response.data;
+
+      setHistoric(data);
+    };
 
     handleReclamations();
+    handleHistoric();
   }, []);
 
   const addCard = async (newCard) => {
@@ -44,42 +54,86 @@ export function CardListProvider({ children }) {
   };
 
   const handleSubmitComents = async (id, newComent) => {
-    let updatedCard = [{ ...list }];
+    if (list.find((item) => item._id === id)?.isResolved === false) {
+      let updatedCard = [{ ...list }];
 
-    const response = await api.post(`/newComent/${id}`, { coments: newComent });
-    if (response.status === 200) {
-      updatedCard = list.map((item) => {
-        if (item._id === id) {
-          item.coments.push(newComent);
-        }
-        return item;
+      const response = await api.post(`/newComent/${id}`, {
+        coments: newComent,
       });
+      if (response.status === 200) {
+        updatedCard = list.map((item) => {
+          if (item._id === id) {
+            item.coments.push(newComent);
+          }
+          return item;
+        });
+      }
+      setList(updatedCard);
+    } else {
+      let updatedCard = [{ ...historic }];
+
+      const response = await api.post(`/newComent/${id}`, {
+        coments: newComent,
+      });
+      if (response.status === 200) {
+        updatedCard = historic.map((item) => {
+          if (item._id === id) {
+            item.coments.push(newComent);
+          }
+          return item;
+        });
+      }
+      setHistoric(updatedCard);
     }
-    setList(updatedCard);
   };
 
   const setLikes = async (id) => {
-    let updatedCard = [{ ...list }];
-    const response = await api.put(`editLike/${id}`);
+    if (list.find((item) => item._id === id)?.isResolved === false) {
+      let updatedCard = [{ ...list }];
+      const response = await api.put(`editLike/${id}`);
 
-    if (response.status === 200) {
-      updatedCard = list.map((item) => {
-        if (item._id === id) {
-          return { ...item, likes: item.likes + 1 };
-        }
-        return item;
-      });
-      setList(updatedCard);
+      if (response.status === 200) {
+        updatedCard = list.map((item) => {
+          if (item._id === id) {
+            return { ...item, likes: item.likes + 1 };
+          }
+          return item;
+        });
+        setList(updatedCard);
+      }
+    } else {
+      let updatedCard = [{ ...historic }];
+      const response = await api.put(`editLike/${id}`);
+
+      if (response.status === 200) {
+        updatedCard = historic.map((item) => {
+          if (item._id === id) {
+            return { ...item, likes: item.likes + 1 };
+          }
+          return item;
+        });
+        setHistoric(updatedCard);
+      }
     }
   };
 
   const deleteCard = async (id) => {
-    let hash = prompt("Digite o código de confirmação:");
+    if (list.find((item) => item._id === id)?.isResolved === false) {
+      let hash = prompt("Digite o código de confirmação:");
 
-    const response = await api.delete(`/deleteProblem/${id}/${hash}`);
+      const response = await api.delete(`/deleteProblem/${id}/${hash}`);
 
-    if (response.status === 200) {
-      setList(list.filter((item) => item._id !== id));
+      if (response.status === 200) {
+        setList(list.filter((item) => item._id !== id));
+      }
+    } else {
+      let hash = prompt("Digite o código de confirmação:");
+
+      const response = await api.delete(`/deleteProblem/${id}/${hash}`);
+
+      if (response.status === 200) {
+        setHistoric(historic.filter((item) => item._id !== id));
+      }
     }
   };
 
@@ -88,6 +142,7 @@ export function CardListProvider({ children }) {
       value={{
         addCard,
         list,
+        historic,
         changeList,
         valuelist,
         changeListFilter,
